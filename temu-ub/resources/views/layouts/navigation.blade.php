@@ -54,6 +54,10 @@
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
+
+                        <x-dropdown-link :href="route('lost-items.create')">
+                            {{ __('New Post') }}
+                        </x-dropdown-link>
                     </x-slot>
                 </x-dropdown>
             </div>

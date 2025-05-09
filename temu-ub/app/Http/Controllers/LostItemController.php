@@ -16,7 +16,9 @@ class LostItemController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'item_type' => 'required|string|max:255',
             'item_name' => 'required|string|max:255',
+            'item_color' => 'nullable|string|max:100',
             'description' => 'nullable|string',
             'location_found' => 'required|string|max:255',
             'date_found' => 'required|date',
@@ -25,12 +27,14 @@ class LostItemController extends Controller
 
         $path = null;
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('lost_items', 'public');
+            $path = $request->file('image')->store('lost-items', 'public');
         }
 
         LostItem::create([
             'user_id' => Auth::id(),
+            'item_type' => $request->item_type ?? 'Unknown',
             'item_name' => $request->item_name,
+            'item_color' => $request->item_color,
             'description' => $request->description,
             'location_found' => $request->location_found,
             'date_found' => $request->date_found,
@@ -40,6 +44,8 @@ class LostItemController extends Controller
 
         return redirect()->back()->with('success', 'Lost item reported successfully!');
     }
+
+
 
     public function index(Request $request)
     {
