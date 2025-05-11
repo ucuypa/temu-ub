@@ -46,17 +46,9 @@ class LostItemController extends Controller
     }
 
 
-
     public function index(Request $request)
     {
-        $query = LostItem::query();
-
-        if ($search = $request->input('search')) {
-            $query->where('item_name', 'like', "%$search%");
-        }
-
-        $lostItems = $query->latest()->get();
-
+        $lostItems = LostItem::all();
         return view('lost_items.index', compact('lostItems'));
     }
 }
