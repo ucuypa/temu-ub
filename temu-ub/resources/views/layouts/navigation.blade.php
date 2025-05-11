@@ -24,6 +24,20 @@
                 </div>
             </div>
 
+                <!-- Search Bar -->       
+                <div class="flex items-center">
+                    <div class="hidden sm:block mr-4">
+                        <form method="GET" action="{{ route('lost-items.index') }}">
+                    <div class="relative">
+                            <input 
+                            type="text" 
+                            name="search" 
+                            placeholder="Search..." 
+                            class="border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-md text-sm text-gray-900 dark:text-gray-100">
+                    </div>
+                </form>
+            </div>
+                
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-dropdown align="right" width="48">

@@ -38,3 +38,5 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('announcements', AnnouncementController::class);
 require __DIR__.'/auth.php';
+
+Route::get('/lost-items', [LostItemController::class, 'index'])->name('lost-items.index');
