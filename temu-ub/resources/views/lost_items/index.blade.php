@@ -486,7 +486,6 @@
     </div>
 </div>
 
-<!-- Add this script -->
 <script>
     // Function to open modal
     function openModal() {
@@ -506,7 +505,7 @@
         }
     }
     
-    // Update your filter button to use openModal()
+    // Update filter button to use openModal()
     document.addEventListener('DOMContentLoaded', function() {
         const filterBtn = document.querySelector('.filter-btn');
         if (filterBtn) {
