@@ -46,16 +46,58 @@ class LostItemController extends Controller
     }
 
 
+
     public function index(Request $request)
     {
-        $search = $request->input('search');
+        $query = LostItem::query();
 
-        $lostItems = LostItem::when($search, function ($query, $search) {
-            return $query->where('item_name', 'like', "%{$search}%")
-                       ->orWhere('description', 'like', "%{$search}%")
-                       ->orWhere('location_found', 'like', "%{$search}%");
-        })->latest()->get();
+        // Search functionality
+        if ($request->has('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('item_name', 'like', '%'.$request->search.'%')
+                  ->orWhere('description', 'like', '%'.$request->search.'%')
+                  ->orWhere('location_found', 'like', '%'.$request->search.'%');
+            });
+        }
 
-        return view('lost_items.index', compact('lostItems'));
+        // Apply filters
+        if ($request->has('status') && $request->status != 'all') {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->has('item_type') && $request->item_type != 'all') {
+            $query->where('item_type', $request->item_type);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->where('date_found', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->where('date_found', '<=', $request->date_to);
+        }
+
+        if ($request->filled('location') && $request->location != '') {
+            $query->where('location_found', 'like', '%'.$request->location.'%');
+        }
+
+        $lostItems = $query->latest()->get();
+        $statuses = [
+            'all' => 'All Statuses',
+            'unclaimed' => 'Not Retrieved',
+            'claimed' => 'Retrieved'
+        ];
+        
+        $types = [
+            'all' => 'All Categories',
+            'Laptop' => 'Laptop',
+            'Phone' => 'Phone',
+            'Accessories' => 'Accessories',
+            'Shoes' => 'Shoes',
+            'Utilities' => 'Utilities',
+            'Other' => 'Other'
+        ];
+        
+        return view('lost_items.index', compact('lostItems', 'statuses', 'types'));
     }
 }
