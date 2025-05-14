@@ -19,8 +19,37 @@ class LostItem extends Model
         'status',
     ];
 
+    protected $casts = [
+        'date_found' => 'date',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public static function statusOptions()
+    {
+        return [
+            'unclaimed' => 'Not Retrieved',
+            'claimed' => 'Retrieved'
+        ];
+    }
+
+    public static function typeOptions()
+    {
+        return [
+            'Laptop',
+            'Phone',
+            'Accessories',
+            'Shoes',
+            'Utilities',
+            'Other'
+        ];
+    }
+
+    public function getStatusTextAttribute()
+    {
+        return self::statusOptions()[$this->status] ?? $this->status;
     }
 }

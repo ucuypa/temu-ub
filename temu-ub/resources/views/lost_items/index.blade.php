@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>Found Items</title>
     <style>
         body {
@@ -80,31 +81,41 @@
             color: #A3D1C6;
         }
 
-        .search-container {
+        .search-form {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-top: 20px;
-            margin-left: -250px;
-        }
-
-        .search-container h2 {
-            color: #3490DC;
-        }
-
-        .search-container form input {
-            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            overflow: hidden;
         }
 
-        .search-container form button {
+        .search-input {
             padding: 10px;
-            background-color: #6C757D;
             border: none;
-            border-radius: 5px;
-            color: white;
+            outline: none;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        .search-button {
+            background-color: #ffffff;
+            border: none;
+            color: rgb(0, 0, 0);
+            padding: 10px 15px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .search-button:hover {
+            background-color: #ffffff;
+            color: #A3D1C6;
+        }
+
+        .search-button i {
+            font-size: 14px;
         }
 
         .row {
@@ -226,6 +237,112 @@
         .profile {
             color: black;
         }
+
+        .filter-btn {
+        background-color: #ffffff;
+        color: rgb(0, 0, 0);
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-right: 15px;
+        font-size: 14px;
+    }
+
+    .filter-btn:hover {
+        background-color: #ffffff;
+        color: #A3D1C6;
+    }
+
+    .filter-btn i {
+        font-size: 14px;
+    }
+
+    /* modal section */
+    .menu {
+        display: flex;
+        align-items: center;
+    }
+
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+    
+    .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 17px;
+        width: 500px;
+        max-width: 90%;
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .modal-header .close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .modal-footer {
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    
+    .btn {
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        border: none;
+    }
+    
+    .btn-primary {
+        background: #8abeb3;
+        color: white;
+        border: none;
+    }
     </style>
 </head>
 
@@ -242,12 +359,19 @@
         </div>
         <!-- Search Section -->
         <div class="search-container">
-            <form action="{{ route('lost-items.index') }}" method="GET">
-                <input type="text" name="search" placeholder="Search">
-                <button type="submit">🔍</button>
+            <form action="{{ route('lost-items.index') }}" method="GET" class="search-form">
+                <input type="text" name="search" placeholder="Search" class="search-input">
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
             </form>
         </div>
         <div class="menu">
+            <!-- Filter Button -->
+        <button class="filter-btn" onclick="document.getElementById('filterModal').style.display='flex'">
+            <i class="fas fa-filter"></i>
+        </button>
+
             <div class="dropdown">
                 <a class="profile" href="#">{{ Auth::user()->name }}</a>
                 <div class="dropdown-content">
@@ -307,4 +431,87 @@
     </div>
 </body>
 
+<!-- Filter Modal -->
+<div class="modal" id="filterModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Filters</h3>
+                <button type="button" class="close" onclick="closeModal()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('lost-items.index') }}" method="GET">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Published Date</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="date" name="date_from" class="form-control" placeholder="From" value="{{ request('date_from') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="date" name="date_to" class="form-control" placeholder="To" value="{{ request('date_to') }}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" name="location" class="form-control" placeholder="Filter by location" value="{{ request('location') }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status" class="form-control">
+                            @foreach($statuses as $key => $value)
+                                <option value="{{ $key }}" {{ request('status') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Categories</label>
+                        <select name="item_type" class="form-control">
+                            @foreach($types as $key => $value)
+                                <option value="{{ $key }}" {{ request('item_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add this script -->
+<script>
+    // Function to open modal
+    function openModal() {
+        document.getElementById('filterModal').style.display = 'flex';
+    }
+    
+    // Function to close modal
+    function closeModal() {
+        document.getElementById('filterModal').style.display = 'none';
+    }
+    
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        const modal = document.getElementById('filterModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+    
+    // Update your filter button to use openModal()
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterBtn = document.querySelector('.filter-btn');
+        if (filterBtn) {
+            filterBtn.onclick = openModal;
+        }
+    });
+</script>
 </html>
