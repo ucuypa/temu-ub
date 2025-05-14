@@ -32,7 +32,7 @@ class LostItemController extends Controller
 
         LostItem::create([
             'user_id' => Auth::id(),
-            'item_type' => $request->item_type ?? 'Unknown',
+            'item_type' => $request->item_type,
             'item_name' => $request->item_name,
             'item_color' => $request->item_color,
             'description' => $request->description,
