@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <title>Found Items</title>
+    <title>My Announcements</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -79,43 +78,6 @@
 
         .header h2:hover {
             color: #A3D1C6;
-        }
-
-        .search-form {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .search-input {
-            padding: 10px;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            width: 200px;
-        }
-
-        .search-button {
-            background-color: #ffffff;
-            border: none;
-            color: rgb(0, 0, 0);
-            padding: 10px 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s;
-        }
-
-        .search-button:hover {
-            background-color: #ffffff;
-            color: #A3D1C6;
-        }
-
-        .search-button i {
-            font-size: 14px;
         }
 
         .row {
@@ -222,7 +184,7 @@
 
         .page-select {
             margin-top: 20px;
-            margin-left: -350px;
+            margin-left: -1050px;
         }
 
         .founditems {
@@ -231,7 +193,7 @@
             font-weight: 600;
         }
 
-        .announcement {
+        .announcement-nav {
             color: black;
             width: 120px;
             font-weight: 600;
@@ -350,14 +312,73 @@
             color: white;
             border: none;
         }
+
         a {
-        text-decoration: none;
+            text-decoration: none;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 30px 40px 20px;
+        }
+
+        .announcement {
+            background: #d3d3d3;
+            margin: 0 40px 20px;
+            padding: 20px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .announcement img {
+            width: 100px;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .announcement .info {
+            flex: 1;
+        }
+
+        .announcement .info h3 {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .buttons .edit {
+            background-color: #1c1c25;
+        }
+
+        .buttons .delete {
+            background-color: #b11111;
         }
     </style>
 </head>
 
 <body>
-    <!-- Navbar -->
     <nav>
         <div class="logo">
             <a class="temu">Temu</a>
@@ -365,29 +386,15 @@
         </div>
         <div class="page-select">
             <a class="founditems" href="/lost-items">Found Items</a>
-            <a class="announcement" href="/announcements">Announcement</a>
-        </div>
-        <!-- Search Section -->
-        <div class="search-container">
-            <form action="{{ route('lost-items.index') }}" method="GET" class="search-form">
-                <input type="text" name="search" placeholder="Search" class="search-input">
-                <button type="submit" class="search-button">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
+            <a class="announcement-nav" href="/announcements">Announcement</a>
         </div>
         <div class="menu">
-            <!-- Filter Button -->
-            <button class="filter-btn" onclick="document.getElementById('filterModal').style.display='flex'">
-                <i class="fas fa-filter"></i>
-            </button>
-
             <div class="dropdown">
                 <a class="profile" href="#">{{ Auth::user()->name }}</a>
                 <div class="dropdown-content">
-                    <a href="route('profile.edit')">My Profile</a>
-                    <a href="{{ route('lost-items.create') }}">New Report</a>
-                    <a href="{{ route('lost-items.my') }}">My Report</a>
+                    <a href="{{ route('profile.edit') }}">My Profile</a>
+                    <a href="{{ route('announcements.create') }}">New Announcement</a>
+                    <a href="{{ route('announcements.my') }}">My Announcement</a>
                     <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                         @csrf
                         <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">Log Out</a>
@@ -397,135 +404,47 @@
         </div>
     </nav>
 
-    <div class="container">
-        <!-- Header Section -->
-        <div class="header">
-            <h2>All</h2>
-            <h2>Laptop</h2>
-            <h2>Phones</h2>
-            <h2>Accessories</h2>
-            <h2>Shoes</h2>
-            <h2>Utilities</h2>
+    <div class="title">My Announcement</div>
+
+    @foreach ($announcements as $announcement)
+    <div class="announcement">
+        <div class="info mb-3 p-3 border rounded">
+            <h3>{{ $announcement->title }}</h3>
+            <p>{{ Str::limit($announcement->content, 150) }}</p> <!-- optional character limit -->
         </div>
+        <div class="buttons">
+            <a href="{{ route('announcements.edit', $announcement->id) }}" class="btn btn-primary">Edit</a>
 
-        <!-- Lost Items Section -->
-        <div class="row">
-            @forelse($lostItems as $item)
-            <div class="col-md-4 col-lg-3">
-                <!-- Make the entire card clickable -->
-                <a href="{{ route('lost-items.show', $item->id) }}">
-                    <div class="card">
-                        <!-- Image with fallback -->
-                        @if($item->image_path)
-                        <img src="{{ asset('storage/' . $item->image_path) }}" class="card-img-top" alt="Item image">
-                        @else
-                        <img src="{{ asset('storage/lost-items/default-laptop.jpeg') }}" class="card-img-top" alt="Default image">
-                        @endif
 
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $item->item_name }}</h5>
-                            <p class="card-text">
-                                <small>
-                                    Found at: {{ $item->location_found }}<br>
-                                    <span class="{{ $item->status === 'claimed' ? 'text-success' : 'text-danger' }} ">
-                                        {{ $item->status === 'claimed' ? 'Retrieved' : 'Not Retrieved' }}
-                                    </span>
-                                </small>
-                            </p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            @empty
-            <div class="col-12">
-                <div class="alert-info">No lost items found in the database.</div>
-            </div>
-            @endforelse
-        </div>
-    </div>
-</body>
-
-<!-- Filter Modal -->
-<div class="modal" id="filterModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Filters</h3>
-                <button type="button" class="close" onclick="closeModal()" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="{{ route('lost-items.index') }}" method="GET">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Published Date</label>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <input type="date" name="date_from" class="form-control" placeholder="From" value="{{ request('date_from') }}">
-                            </div>
-                            <div class="col-md-6">
-                                <input type="date" name="date_to" class="form-control" placeholder="To" value="{{ request('date_to') }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Location</label>
-                        <input type="text" name="location" class="form-control" placeholder="Filter by location" value="{{ request('location') }}">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select name="status" class="form-control">
-                            @foreach($statuses as $key => $value)
-                            <option value="{{ $key }}" {{ request('status') == $key ? 'selected' : '' }}>{{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Categories</label>
-                        <select name="item_type" class="form-control">
-                            @foreach($types as $key => $value)
-                            <option value="{{ $key }}" {{ request('item_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Apply Filters</button>
-                </div>
+            <form action="{{ route('announcements.destroy', $announcement->id) }}" method="POST" style="display:inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="delete" onclick="return confirm('Are you sure you want to delete this announcement?')">Delete</button>
             </form>
         </div>
     </div>
-</div>
+    @endforeach
 
+</body>
 <script>
-    // Function to open modal
-    function openModal() {
-        document.getElementById('filterModal').style.display = 'flex';
+    function openEditModal(id, title, content) {
+        document.getElementById('editModal').style.display = 'block';
+        document.getElementById('editTitle').value = title;
+        document.getElementById('editContent').value = content;
+        document.getElementById('editForm').action = `/announcements/${id}`;
     }
 
-    // Function to close modal
-    function closeModal() {
-        document.getElementById('filterModal').style.display = 'none';
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
     }
 
-    // Close modal when clicking outside of it
+    // Optional: Close modal on outside click
     window.onclick = function(event) {
-        const modal = document.getElementById('filterModal');
+        const modal = document.getElementById('editModal');
         if (event.target == modal) {
-            closeModal();
+            modal.style.display = "none";
         }
     }
-
-    // Update filter button to use openModal()
-    document.addEventListener('DOMContentLoaded', function() {
-        const filterBtn = document.querySelector('.filter-btn');
-        if (filterBtn) {
-            filterBtn.onclick = openModal;
-        }
-    });
 </script>
 
 </html>

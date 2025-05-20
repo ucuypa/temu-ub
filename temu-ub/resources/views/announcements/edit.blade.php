@@ -207,20 +207,22 @@
 
     <!-- Form Section -->
     <div class="container">
-        <form action="{{ route('lost-items.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('announcements.update', $announcement->id) }}" method="POST">
             @csrf
+            @method('PUT')
 
-            <div class="mb-3">
-                <label>Title</label>
-                <input type="text" name="title" class="form-control" required>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input name="title" type="text" class="form-control" id="title" value="{{ old('title', $announcement->title) }}" required>
             </div>
-            <div class="mb-3">
-                <label>Content</label>
-                <textarea name="content" class="form-control" rows="5" required></textarea>
-            </div>
-            <button class="btn btn-success">Post</button>
 
-        <button type="submit">Submit</button>
+            <div class="form-group">
+                <label for="content">Content</label>
+                <textarea name="content" class="form-control" rows="5" id="content" required>{{ old('content', $announcement->content) }}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="{{ route('announcements.index') }}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </body>

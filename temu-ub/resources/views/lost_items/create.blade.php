@@ -78,33 +78,6 @@
             color: #A3D1C6;
         }
 
-        .search-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            margin-left: -250px;
-        }
-
-        .search-container h2 {
-            color: #3490DC;
-        }
-
-        .search-container form input {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .search-container form button {
-            padding: 10px;
-            background-color: #6C757D;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-        }
-
         form input,
         form select,
         form textarea {
@@ -139,6 +112,70 @@
         .mb-6 {
             margin-bottom: 24px;
         }
+
+        .logo {
+            display: flex;
+            width: 95px;
+            height: 56px;
+            flex-direction: column;
+            justify-content: center;
+            color: black;
+            font-family: Epilogue;
+            font-size: 32px;
+            font-weight: 600;
+            margin-left: 20px;
+        }
+
+        .temu {
+            display: flex;
+            width: 95px;
+            margin-top: 30px;
+            flex-direction: column;
+            justify-content: center;
+            color: black;
+            font-family: Epilogue;
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .ub {
+            display: flex;
+            width: 95px;
+            margin-top: -28px;
+            flex-direction: column;
+            justify-content: center;
+            color: #A3D1C6;
+            font-family: Epilogue;
+            font-size: 32px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: normal;
+        }
+
+        .page-select {
+            margin-top: 20px;
+            margin-left: -1050px;
+        }
+
+        .founditems {
+            color: black;
+            width: 120px;
+            font-weight: 600;
+        }
+
+        .announcement {
+            color: black;
+            width: 120px;
+            font-weight: 600;
+        }
+
+        .page-select a:hover {
+            color: #A3D1C6;
+        }
+
+        .profile {
+            color: black;
+        }
     </style>
 </head>
 
@@ -152,13 +189,6 @@
         <div class="page-select">
             <a class="founditems" href="/lost-items">Found Items</a>
             <a class="announcement" href="/announcement">Announcement</a>
-        </div>
-        <!-- Search Section -->
-        <div class="search-container">
-            <form action="{{ route('lost-items.index') }}" method="GET">
-                <input type="text" name="search" placeholder="Search">
-                <button type="submit">🔍</button>
-            </form>
         </div>
         <div class="menu">
             <div class="dropdown">
@@ -182,7 +212,8 @@
 
             <div class="mb-4">
                 <label for="item_type">Item Type</label>
-                <select name="item_type" id="item_type">
+                <select name="item_type" id="item_type" required>
+                    <option value="">-- Select Item Type --</option>
                     <option value="Laptop">Laptop</option>
                     <option value="Phone">Phone</option>
                     <option value="Accessories">Accessories</option>
@@ -223,6 +254,7 @@
             </div>
 
             <button type="submit">Submit</button>
+            <a href="{{ route('lost-items.index') }}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </body>

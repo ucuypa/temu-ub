@@ -2,10 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <title>Found Items</title>
+    <meta charset="UTF-8" />
+    <title>My Found Items Report</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -350,8 +348,32 @@
             color: white;
             border: none;
         }
+
         a {
-        text-decoration: none;
+            text-decoration: none;
+        }
+
+        .buttons {
+           padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .buttons .edit {
+            background-color: #1c1c25;
+        }
+
+        .buttons .delete {
+            background-color: #b11111;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -386,8 +408,8 @@
                 <a class="profile" href="#">{{ Auth::user()->name }}</a>
                 <div class="dropdown-content">
                     <a href="route('profile.edit')">My Profile</a>
-                    <a href="{{ route('lost-items.create') }}">New Report</a>
-                    <a href="{{ route('lost-items.my') }}">My Report</a>
+                    <a href="{{ route('lost-items.create') }}">New Post</a>
+                    <a href="{{ route('lost-items.my') }}">My Announcement</a>
                     <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                         @csrf
                         <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">Log Out</a>
@@ -400,12 +422,7 @@
     <div class="container">
         <!-- Header Section -->
         <div class="header">
-            <h2>All</h2>
-            <h2>Laptop</h2>
-            <h2>Phones</h2>
-            <h2>Accessories</h2>
-            <h2>Shoes</h2>
-            <h2>Utilities</h2>
+            <h1>My Reports</h1>
         </div>
 
         <!-- Lost Items Section -->
@@ -424,14 +441,16 @@
 
                         <div class="card-body">
                             <h5 class="card-title">{{ $item->item_name }}</h5>
-                            <p class="card-text">
-                                <small>
-                                    Found at: {{ $item->location_found }}<br>
-                                    <span class="{{ $item->status === 'claimed' ? 'text-success' : 'text-danger' }} ">
-                                        {{ $item->status === 'claimed' ? 'Retrieved' : 'Not Retrieved' }}
-                                    </span>
-                                </small>
-                            </p>
+                            <div class="buttons">
+                                <a href="{{ route('lost-items.edit', $item->id) }}" class="btn btn-primary">Edit</a>
+
+
+                                <form action="{{ route('lost-items.destroy', $item->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="delete" onclick="return confirm('Are you sure you want to delete this announcement?')">Delete</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </a>
@@ -444,88 +463,5 @@
         </div>
     </div>
 </body>
-
-<!-- Filter Modal -->
-<div class="modal" id="filterModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Filters</h3>
-                <button type="button" class="close" onclick="closeModal()" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="{{ route('lost-items.index') }}" method="GET">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Published Date</label>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <input type="date" name="date_from" class="form-control" placeholder="From" value="{{ request('date_from') }}">
-                            </div>
-                            <div class="col-md-6">
-                                <input type="date" name="date_to" class="form-control" placeholder="To" value="{{ request('date_to') }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Location</label>
-                        <input type="text" name="location" class="form-control" placeholder="Filter by location" value="{{ request('location') }}">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select name="status" class="form-control">
-                            @foreach($statuses as $key => $value)
-                            <option value="{{ $key }}" {{ request('status') == $key ? 'selected' : '' }}>{{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Categories</label>
-                        <select name="item_type" class="form-control">
-                            @foreach($types as $key => $value)
-                            <option value="{{ $key }}" {{ request('item_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Apply Filters</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Function to open modal
-    function openModal() {
-        document.getElementById('filterModal').style.display = 'flex';
-    }
-
-    // Function to close modal
-    function closeModal() {
-        document.getElementById('filterModal').style.display = 'none';
-    }
-
-    // Close modal when clicking outside of it
-    window.onclick = function(event) {
-        const modal = document.getElementById('filterModal');
-        if (event.target == modal) {
-            closeModal();
-        }
-    }
-
-    // Update filter button to use openModal()
-    document.addEventListener('DOMContentLoaded', function() {
-        const filterBtn = document.querySelector('.filter-btn');
-        if (filterBtn) {
-            filterBtn.onclick = openModal;
-        }
-    });
-</script>
 
 </html>

@@ -1,22 +1,80 @@
+<!-- resources/views/announcements/show.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Found Items</title>
+    <title>{{ $announcement->title }} - Announcement Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: white;
+            background-color: #f9f9f9;
         }
 
         .container {
             width: 80%;
-            margin-left: 50px;
-            padding-top: 20px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .col-md-6 {
+            width: 48%;
+        }
+
+        .img-fluid {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        h3 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .btn-primary {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .text-success {
+            color: green;
+        }
+
+        .text-danger {
+            color: red;
         }
 
         nav {
@@ -25,6 +83,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 80px;
         }
 
         nav a {
@@ -63,56 +122,6 @@
             display: block;
         }
 
-        .header {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .header h2 {
-            font-size: 14px;
-            color: #4B5563;
-        }
-
-        .header h2:hover {
-            color: #A3D1C6;
-        }
-
-        form input,
-        form select,
-        form textarea {
-            border: 1px solid #ccc;
-            padding: 10px;
-            width: 100%;
-            border-radius: 4px;
-            margin-top: 5px;
-        }
-
-        form label {
-            font-weight: bold;
-        }
-
-        form button {
-            background-color: #3490DC;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        form button:hover {
-            background-color: #2779BD;
-        }
-
-        .mb-4 {
-            margin-bottom: 16px;
-        }
-
-        .mb-6 {
-            margin-bottom: 24px;
-        }
-
         .logo {
             display: flex;
             width: 95px;
@@ -129,7 +138,7 @@
         .temu {
             display: flex;
             width: 95px;
-            margin-top: 30px;
+            margin-top: 5px;
             flex-direction: column;
             justify-content: center;
             color: black;
@@ -153,8 +162,8 @@
         }
 
         .page-select {
-            margin-top: 20px;
-            margin-left: -1050px;
+            margin-top: 1px;
+            margin-left: -1057px;
         }
 
         .founditems {
@@ -194,8 +203,9 @@
             <div class="dropdown">
                 <a class="profile" href="#">{{ Auth::user()->name }}</a>
                 <div class="dropdown-content">
-                    <a href="route('profile.edit')">My Profile</a>
-                    <a href="{{ route('lost-items.create') }}">New Post</a>
+                    <a href="{{ route('profile.edit') }}">My Profile</a>
+                    <a href="{{ route('announcements.create') }}">New Announcement</a>
+                    <a href="{{ route('announcements.my') }}">My Announcement</a>
                     <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                         @csrf
                         <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">Log Out</a>
@@ -205,23 +215,11 @@
         </div>
     </nav>
 
-    <!-- Form Section -->
+    <!-- Announcement Content -->
     <div class="container">
-        <form action="{{ route('lost-items.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-
-            <div class="mb-3">
-                <label>Title</label>
-                <input type="text" name="title" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label>Content</label>
-                <textarea name="content" class="form-control" rows="5" required></textarea>
-            </div>
-            <button class="btn btn-success">Post</button>
-
-        <button type="submit">Submit</button>
-        </form>
+        <h3>{{ $announcement->title }}</h3>
+        <p>{{ $announcement->content }}</p>
+        <p><strong>Posted by:</strong> {{ $announcement->user->name }}</p>
     </div>
 </body>
 

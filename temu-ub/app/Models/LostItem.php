@@ -11,7 +11,9 @@ class LostItem extends Model
 
     protected $fillable = [
         'user_id',
+        'item_type',
         'item_name',
+        'item_color',
         'description',
         'location_found',
         'date_found',
@@ -52,4 +54,10 @@ class LostItem extends Model
     {
         return self::statusOptions()[$this->status] ?? $this->status;
     }
+
+    public function claims()
+    {
+        return $this->hasMany(Claim::class);
+    }
+    
 }

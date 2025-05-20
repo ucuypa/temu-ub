@@ -207,20 +207,55 @@
 
     <!-- Form Section -->
     <div class="container">
-        <form action="{{ route('lost-items.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('lost-items.update', $item->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
 
-            <div class="mb-3">
-                <label>Title</label>
-                <input type="text" name="title" class="form-control" required>
+            <div class="form-group mb-3">
+                <label for="item_type">Item Type</label>
+                <select name="item_type" id="item_type" class="form-control" required>
+                    <option value="">-- Select Item Type --</option>
+                    <option value="Laptop" {{ old('item_type', $item->item_type) == 'Laptop' ? 'selected' : '' }}>Laptop</option>
+                    <option value="Phone" {{ old('item_type', $item->item_type) == 'Phone' ? 'selected' : '' }}>Phone</option>
+                    <option value="Accessories" {{ old('item_type', $item->item_type) == 'Accessories' ? 'selected' : '' }}>Accessories</option>
+                    <option value="Shoes" {{ old('item_type', $item->item_type) == 'Shoes' ? 'selected' : '' }}>Shoes</option>
+                    <option value="Utilities" {{ old('item_type', $item->item_type) == 'Utilities' ? 'selected' : '' }}>Utilities</option>
+                    <option value="Others" {{ old('item_type', $item->item_type) == 'Others' ? 'selected' : '' }}>Others</option>
+                </select>
             </div>
-            <div class="mb-3">
-                <label>Content</label>
-                <textarea name="content" class="form-control" rows="5" required></textarea>
-            </div>
-            <button class="btn btn-success">Post</button>
 
-        <button type="submit">Submit</button>
+            <div class="form-group mb-3">
+                <label for="item_name">Item Name</label>
+                <input type="text" name="item_name" id="item_name" class="form-control" value="{{ old('item_name', $item->item_name) }}" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="item_color">Item Color</label>
+                <input type="text" name="item_color" id="item_color" class="form-control" value="{{ old('item_color', $item->item_color) }}">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" rows="3" class="form-control">{{ old('description', $item->description) }}</textarea>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="location_found">Location Found</label>
+                <input type="text" name="location_found" id="location_found" class="form-control" value="{{ old('location_found', $item->location_found) }}" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="date_found">Date Found</label>
+                <input type="date" name="date_found" id="date_found" class="form-control" value="{{ old('date_found', $item->date_found) }}" required>
+            </div>
+
+            <div class="form-group mb-4">
+                <label for="image">Upload Image</label>
+                <input type="file" name="image" id="image" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="{{ route('lost-items.index') }}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </body>
